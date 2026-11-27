@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:">
+<meta name="theme-color" content="#f6f8f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1210" media="(prefers-color-scheme: dark)">
+<title>Budget</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%20512%20512%22%20aria-hidden%3D%22true%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22116%22%20fill%3D%22%2316A34A%22%2F%3E%3Cpath%20d%3D%22M120%20372%20V160%20L232%20300%20L344%20160%20V372%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%2260%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M378%20104%20H436%20L402%20146%20A34%2034%200%201%201%20374%20200%22%20fill%3D%22none%22%20stroke%3D%22%23DCFCE7%22%20stroke-width%3D%2222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<style>
+:root{--bg:#f6f8f7;--surface:#fff;--surface-2:#ecfdf5;--ink:#0f172a;--muted:#475569;--faint:#7c8a96;--line:#e6ebe8;--line-strong:#d3dbd6;--track:#e9eeeb;--row-alt:#f4f7f5;--primary:#15803d;--primary-soft:#dcfce7;--bar:#16a34a;--bar-warn:#d97706;--danger:#b91c1c;--danger-soft:#fee2e2;--warn:#92400e;--warn-soft:#fef3c7;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1210;--surface:#111a17;--surface-2:#132a1f;--ink:#e8f0ec;--muted:#9fb2aa;--faint:#7a8d85;--line:#1f2d27;--line-strong:#2f413a;--track:#1c2924;--row-alt:#15201c;--primary:#22c55e;--primary-soft:#14361f;--bar:#22c55e;--bar-warn:#f59e0b;--danger:#f87171;--danger-soft:#3b1414;--warn:#fbbf24;--warn-soft:#3a2a0b;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.num,.amt,.big{font-variant-numeric:tabular-nums}
+.top{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}.brand svg{flex:none}.who{min-width:0}
+.name{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sub{font-size:12px;color:var(--muted)}
+.lock{background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:10px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600}
+main{max-width:640px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+h2{font-size:15px;font-weight:600;margin:10px 4px 0}
+.muted{color:var(--muted)}.err{color:var(--danger);font-weight:600}
+.unlock{display:flex;flex-direction:column;gap:8px;margin-top:24px}
+label{font-weight:600;font-size:14px}.check{display:flex;align-items:center;gap:8px;font-weight:500}
+input[type=password]{font:inherit;padding:11px 12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface);color:var(--ink)}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary)}
+.primary{margin-top:8px;font:inherit;font-weight:600;border:0;border-radius:12px;padding:13px;background:var(--primary);color:#fff}
+@media (prefers-color-scheme:dark){.primary{color:#052e16}}
+.hero{display:flex;flex-direction:column;gap:2px}
+.big{font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1.1;margin:2px 0 4px}
+.k{font-size:13px;font-weight:500;color:var(--muted)}
+.minis{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--muted)}.minis b{display:block;font-size:15px;font-weight:600;color:var(--ink)}.minis b.pos{color:var(--primary)}.minis b.neg{color:var(--danger)}
+.chart{margin-top:12px}.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:4px}.legend i{display:inline-block;width:14px;height:0;border-top:2px solid var(--bar);vertical-align:middle;margin-right:5px}.legend i.dash{border-top:2px dashed var(--faint)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat .label{font-size:13px;color:var(--muted);font-weight:500}.stat .v{font-size:20px;font-weight:600;margin-top:2px}
+.bar{height:6px;border-radius:99px;background:var(--track);overflow:hidden;margin-top:8px}.bar>span{display:block;height:100%;background:var(--bar);border-radius:99px}.bar.warn>span{background:var(--bar-warn)}.bar.over>span{background:var(--danger)}
+.list{padding:0;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:12px 18px}
+.list>.row:nth-child(even),.list>details:nth-child(even)>summary,.items>.row:nth-child(even){background:var(--row-alt)}
+.row .main{flex:1;min-width:0}.row .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .s{font-size:13px;color:var(--muted)}
+.amt{font-weight:600;text-align:right;white-space:nowrap}.amt .s{font-weight:400}.neg{color:var(--danger)}.pos{color:var(--primary)}
+.head{background:var(--primary-soft);padding:10px 18px;font-size:13px;font-weight:600;color:var(--primary);display:flex;justify-content:space-between}
+details>summary{list-style:none;cursor:pointer}details>summary::-webkit-details-marker{display:none}
+.chev{display:inline-block;width:16px;color:var(--faint);transition:transform .15s}details[open]>summary .chev{transform:rotate(90deg)}
+.items{border-top:1px solid var(--line)}.items .row{padding:9px 18px 9px 40px;font-size:14px}
+.badge{display:inline-block;font-size:11.5px;font-weight:600;border-radius:99px;padding:2px 8px;white-space:nowrap;margin-top:2px}.b-paid{background:var(--primary-soft);color:var(--primary)}.b-overdue{background:var(--danger-soft);color:var(--danger)}.b-due-soon{background:var(--warn-soft);color:var(--warn)}.b-upcoming{background:var(--track);color:var(--muted)}
+.date{width:42px;flex:none;text-align:center;border-radius:11px;background:var(--bg);border:1px solid var(--line);padding:5px 0;line-height:1.1}.date b{display:block;font-size:17px;font-weight:600}.date small{font-size:10.5px;font-weight:600;text-transform:uppercase;color:var(--muted)}
+.accts{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}.accts::-webkit-scrollbar{display:none}
+.acct{flex:0 0 72%;max-width:250px;scroll-snap-align:start;border-radius:18px;padding:14px 16px;height:118px;display:flex;flex-direction:column;justify-content:space-between;color:#fff}
+.acct .ty{font-size:12px;opacity:.8}.acct .bal{font-size:22px;font-weight:600;letter-spacing:-.01em}.acct .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f-checking{background:#14532d}.f-savings{background:#15803d}.f-cash{background:#166534}.f-credit{background:#1e293b}.f-loan{background:#334155}
+.todo{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}.card-h+.todo{border-top:0}
+.ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center}.ico svg{width:17px;height:17px}
+.i-green{background:var(--primary-soft);color:var(--primary)}.i-warn{background:var(--warn-soft);color:var(--warn)}.i-danger{background:var(--danger-soft);color:var(--danger)}
+.todo .t{font-weight:600;font-size:14px}.todo .s{font-size:12.5px;color:var(--muted)}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}.cat .l{display:flex;justify-content:space-between;gap:6px;font-size:13px}.cat .l span:first-child{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cat .l span:last-child{color:var(--muted);white-space:nowrap}
+.card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.card-h b{font-weight:600}
+.pill{font-size:11.5px;font-weight:700;border-radius:99px;padding:1px 8px;background:var(--warn-soft);color:var(--warn)}
+.tag{font-size:11px;font-weight:600;border-radius:99px;padding:1px 7px;background:var(--track);color:var(--muted);margin-left:6px;vertical-align:1px}
+.check-done{color:var(--primary);font-weight:700;margin-right:6px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.tabs button{font:inherit;font-size:11.5px;font-weight:600;border:0;background:none;color:var(--muted);padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .tb{width:52px;height:28px;border-radius:99px;display:grid;place-items:center}.tabs button svg{width:20px;height:20px}
+.tabs button[aria-selected=true]{color:var(--primary)}.tabs button[aria-selected=true] .tb{background:var(--primary-soft)}
+.empty{text-align:center;color:var(--muted);padding:24px 16px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><svg width="30" height="30" viewBox="0 0 512 512" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="512" height="512" rx="116" fill="#16A34A"/><path d="M120 372 V160 L232 300 L344 160 V372" fill="none" stroke="#fff" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/><path d="M378 104 H436 L402 146 A34 34 0 1 1 374 200" fill="none" stroke="#DCFCE7" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="who"><div class="name" id="household">My Money Manager</div><div class="sub" id="updated">Read-only view</div></div></div>
+  <button id="lock" class="lock" hidden>Lock</button>
+</header>
+<main id="app">
+  <form id="unlock" class="card unlock">
+    <h1>Unlock budget</h1>
+    <p class="muted">Enter the view passphrase set in My Money Manager.</p>
+    <label for="pass">Passphrase</label>
+    <input id="pass" type="password" autocomplete="current-password" required>
+    <label class="check"><input id="remember" type="checkbox"> Remember on this device</label>
+    <p id="err" class="err" hidden>That passphrase isn't right.</p>
+    <button type="submit" class="primary" id="go">Unlock</button>
+  </form>
+</main>
+<nav id="tabs" class="tabs" hidden></nav>
+<script>
+const PAYLOAD = {"v":1,"iter":600000,"salt":"LMfcWKFXjv7vW/pSD5zXgA==","iv":"wQoxQ7/AQeNvFd5Y","data":"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"};
+
+// Fallback for pages opened over plain http on the home network, where browsers turn off WebCrypto.
+// PBKDF2-HMAC-SHA256 and AES-256-GCM decryption, written out in plain JavaScript.
+const SOFT = (() => {
+  const K = new Int32Array([
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  ])
+  const IV = new Int32Array([
+    0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+  ])
+
+  // One SHA-256 block: w[0..15] holds the block, st is updated in place.
+  function compress(st, w) {
+    for (let i = 16; i < 64; i++) {
+      const x = w[i - 15], y = w[i - 2]
+      const s0 = ((x >>> 7) | (x << 25)) ^ ((x >>> 18) | (x << 14)) ^ (x >>> 3)
+      const s1 = ((y >>> 17) | (y << 15)) ^ ((y >>> 19) | (y << 13)) ^ (y >>> 10)
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0
+    }
+    let a = st[0], b = st[1], c = st[2], d = st[3], e = st[4], f = st[5], g = st[6], h = st[7]
+    for (let i = 0; i < 64; i++) {
+      const S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7))
+      const t1 = (h + S1 + ((e & f) ^ (~e & g)) + K[i] + w[i]) | 0
+      const S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10))
+      const t2 = (S0 + ((a & b) ^ (a & c) ^ (b & c))) | 0
+      h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0
+    }
+    st[0] = (st[0] + a) | 0; st[1] = (st[1] + b) | 0; st[2] = (st[2] + c) | 0; st[3] = (st[3] + d) | 0
+    st[4] = (st[4] + e) | 0; st[5] = (st[5] + f) | 0; st[6] = (st[6] + g) | 0; st[7] = (st[7] + h) | 0
+  }
+
+  // Hashes msg, continuing from a state that has already taken "done" bytes (a multiple of 64).
+  function hashFrom(state, done, msg) {
+    const len = ((msg.length + 9 + 63) >> 6) << 6
+    const buf = new Uint8Array(len)
+    buf.set(msg)
+    buf[msg.length] = 0x80
+    const dv = new DataView(buf.buffer)
+    const bits = (done + msg.length) * 8
+    dv.setUint32(len - 8, Math.floor(bits / 4294967296))
+    dv.setUint32(len - 4, bits >>> 0)
+    const st = Int32Array.from(state), w = new Int32Array(64)
+    for (let o = 0; o < len; o += 64) {
+      for (let i = 0; i < 16; i++) w[i] = dv.getInt32(o + i * 4)
+      compress(st, w)
+    }
+    return st
+  }
+
+  function toBytes(words) {
+    const out = new Uint8Array(words.length * 4), dv = new DataView(out.buffer)
+    words.forEach((x, i) => dv.setInt32(i * 4, x))
+    return out
+  }
+
+  function pbkdf2(pass, salt, iterations) {
+    const key = pass.length > 64 ? toBytes(hashFrom(IV, 0, pass)) : pass
+    const padded = (x) => {
+      const blk = new Uint8Array(64)
+      blk.set(key)
+      const dv = new DataView(blk.map((b) => b ^ x).buffer)
+      const st = Int32Array.from(IV), w = new Int32Array(64)
+      for (let i = 0; i < 16; i++) w[i] = dv.getInt32(i * 4)
+      compress(st, w)
+      return st
+    }
+    const inner = padded(0x36), outer = padded(0x5c)
+    const first = new Uint8Array(salt.length + 4)
+    first.set(salt)
+    first[salt.length + 3] = 1
+    let u = hashFrom(outer, 64, toBytes(hashFrom(inner, 64, first)))
+    const out = Int32Array.from(u), st = new Int32Array(8), w = new Int32Array(64)
+    for (let n = 1; n < iterations; n++) {
+      // HMAC of a 32-byte value: one padded block for the inner hash, one for the outer.
+      st.set(inner); w.set(u); w[8] = -2147483648; w.fill(0, 9, 15); w[15] = 768; compress(st, w)
+      const ih = Int32Array.from(st)
+      st.set(outer); w.set(ih); w[8] = -2147483648; w.fill(0, 9, 15); w[15] = 768; compress(st, w)
+      u = Int32Array.from(st)
+      for (let i = 0; i < 8; i++) out[i] ^= u[i]
+    }
+    return toBytes(out)
+  }
+
+  const SBOX = new Uint8Array(256)
+  {
+    const rotl = (x, s) => ((x << s) | (x >> (8 - s))) & 0xff
+    let p = 1, q = 1
+    do {
+      p = p ^ ((p << 1) & 0xff) ^ (p & 0x80 ? 0x1b : 0)
+      q ^= q << 1; q ^= q << 2; q ^= q << 4; q &= 0xff
+      if (q & 0x80) q ^= 0x09
+      SBOX[p] = q ^ rotl(q, 1) ^ rotl(q, 2) ^ rotl(q, 3) ^ rotl(q, 4) ^ 0x63
+    } while (p !== 1)
+    SBOX[0] = 0x63
+  }
+  const xtime = (b) => ((b << 1) ^ (b & 0x80 ? 0x1b : 0)) & 0xff
+
+  function expandKey(key) {
+    const w = new Uint8Array(240)
+    w.set(key)
+    let rcon = 1
+    for (let i = 32; i < 240; i += 4) {
+      let t = [w[i - 4], w[i - 3], w[i - 2], w[i - 1]]
+      if (i % 32 === 0) {
+        t = [SBOX[t[1]] ^ rcon, SBOX[t[2]], SBOX[t[3]], SBOX[t[0]]]
+        rcon = xtime(rcon)
+      } else if (i % 32 === 16) t = t.map((b) => SBOX[b])
+      for (let j = 0; j < 4; j++) w[i + j] = w[i - 32 + j] ^ t[j]
+    }
+    return w
+  }
+
+  function encryptBlock(rk, input) {
+    const s = new Uint8Array(16), t = new Uint8Array(16)
+    for (let i = 0; i < 16; i++) s[i] = input[i] ^ rk[i]
+    for (let r = 1; r <= 14; r++) {
+      for (let c = 0; c < 4; c++) for (let row = 0; row < 4; row++) t[c * 4 + row] = SBOX[s[((c + row) % 4) * 4 + row]]
+      if (r < 14)
+        for (let c = 0; c < 16; c += 4) {
+          const a0 = t[c], a1 = t[c + 1], a2 = t[c + 2], a3 = t[c + 3], x = a0 ^ a1 ^ a2 ^ a3
+          t[c] = a0 ^ x ^ xtime(a0 ^ a1); t[c + 1] = a1 ^ x ^ xtime(a1 ^ a2)
+          t[c + 2] = a2 ^ x ^ xtime(a2 ^ a3); t[c + 3] = a3 ^ x ^ xtime(a3 ^ a0)
+        }
+      for (let i = 0; i < 16; i++) s[i] = t[i] ^ rk[r * 16 + i]
+    }
+    return s
+  }
+
+  // Multiplication in GF(2^128) with GCM's bit order.
+  function gmul(x, y) {
+    const z = new Uint8Array(16), v = y.slice()
+    for (let i = 0; i < 128; i++) {
+      if (x[i >> 3] & (0x80 >> (i & 7))) for (let j = 0; j < 16; j++) z[j] ^= v[j]
+      const lsb = v[15] & 1
+      for (let j = 15; j > 0; j--) v[j] = (v[j] >>> 1) | ((v[j - 1] & 1) << 7)
+      v[0] >>>= 1
+      if (lsb) v[0] ^= 0xe1
+    }
+    return z
+  }
+
+  function gcmDecrypt(key, iv, sealed) {
+    const rk = expandKey(key)
+    const H = encryptBlock(rk, new Uint8Array(16))
+    const data = sealed.subarray(0, sealed.length - 16), tag = sealed.subarray(sealed.length - 16)
+    const ctr = new Uint8Array(16)
+    ctr.set(iv)
+    const out = new Uint8Array(data.length)
+    let x = new Uint8Array(16)
+    for (let o = 0; o < data.length; o += 16) {
+      const block = data.subarray(o, o + 16)
+      for (let j = 0; j < block.length; j++) x[j] ^= block[j]
+      x = gmul(x, H)
+      const n = 2 + o / 16
+      ctr[12] = n >>> 24; ctr[13] = (n >>> 16) & 0xff; ctr[14] = (n >>> 8) & 0xff; ctr[15] = n & 0xff
+      const ks = encryptBlock(rk, ctr)
+      for (let j = 0; j < block.length; j++) out[o + j] = block[j] ^ ks[j]
+    }
+    const lens = new Uint8Array(16)
+    new DataView(lens.buffer).setUint32(12, data.length * 8)
+    for (let j = 0; j < 16; j++) x[j] ^= lens[j]
+    x = gmul(x, H)
+    ctr[12] = 0; ctr[13] = 0; ctr[14] = 0; ctr[15] = 1
+    const ek = encryptBlock(rk, ctr)
+    let diff = 0
+    for (let j = 0; j < 16; j++) diff |= (x[j] ^ ek[j]) ^ tag[j]
+    if (diff) throw new Error('wrong passphrase')
+    return out
+  }
+
+  return { pbkdf2, gcmDecrypt }
+})()
+
+
+const $ = (id) => document.getElementById(id)
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+const money = (c) => (c < 0 ? '−' : '') + usd.format(Math.abs(c) / 100)
+const monthName = (m) => { const [y, mo] = m.split('-').map(Number); return new Date(y, mo - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) }
+const parseDay = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d) }
+const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0))
+const KEY = 'mmm-view-pass:' + location.pathname
+const store = {
+  get() { try { return localStorage.getItem(KEY) } catch { return null } },
+  set(v) { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY) } catch {} }
+}
+
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag)
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue
+    if (k === 'class') el.className = v
+    else el.setAttribute(k, v === true ? '' : v)
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k instanceof Node ? k : String(k))
+  return el
+}
+
+// Icons (Lucide outlines), fixed markup only.
+const SVG = (p) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'
+const ICONS = {
+  dashboard: SVG('<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'),
+  budget: SVG('<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>'),
+  funds: SVG('<path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1"/>'),
+  bills: SVG('<path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/>'),
+  inbox: SVG('<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>'),
+  alert: SVG('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'),
+  gift: SVG('<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>'),
+  check: SVG('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>')
+}
+function icon(name, tone) { const s = h('span', { class: 'ico i-' + tone }); s.innerHTML = ICONS[name]; return s }
+
+async function decrypt(pass) {
+  const salt = b64(PAYLOAD.salt), iv = b64(PAYLOAD.iv), data = b64(PAYLOAD.data)
+  let plain
+  if (window.crypto && crypto.subtle) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey'])
+    const key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: PAYLOAD.iter, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, false, ['decrypt'])
+    plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data)
+  } else {
+    await new Promise((r) => setTimeout(r, 30)) // let "Unlocking…" show before the slow part
+    plain = SOFT.gcmDecrypt(SOFT.pbkdf2(new TextEncoder().encode(pass), salt, PAYLOAD.iter), iv, data)
+  }
+  return JSON.parse(new TextDecoder().decode(plain))
+}
+
+// A thin bar; with caution it turns amber at 85% (spending against a plan).
+function bar(value, max, over, caution) {
+  const pct = max > 0 ? Math.max(0, Math.min(100, (value / max) * 100)) : value > 0 ? 100 : 0
+  const s = h('span'); s.style.width = pct + '%'
+  return h('div', { class: 'bar' + (over ? ' over' : caution && pct >= 85 ? ' warn' : '') }, s)
+}
+
+// Left to spend through the month, against an even pace to $0 on the last day.
+function leftLine(d) {
+  const [y, m] = d.month.split('-').map(Number)
+  const days = new Date(y, m, 0).getDate()
+  const nowMonth = d.today.slice(0, 7)
+  const dayNow = d.month === nowMonth ? Number(d.today.slice(8, 10)) : d.month < nowMonth ? days : 0
+  const planned = d.totals.expensePlannedCents
+  const byDay = new Array(days).fill(0)
+  for (const x of d.daily) byDay[Number(x.date.slice(8, 10)) - 1] += x.spentCents
+  const actual = []
+  let left = planned
+  for (let i = 0; i < dayNow; i++) { left -= byDay[i]; actual.push(left) }
+  const pace = Array.from({ length: days }, (_, i) => Math.round(planned * (1 - (i + 1) / days)))
+  return { days, dayNow, actual, pace }
+}
+
+function chartSvg(line) {
+  const W = 320, H = 112, L = 2, R = 2, T = 6, B = 18
+  const all = line.pace.concat(line.actual, [0])
+  const max = Math.max(...all, 1), min = Math.min(...all)
+  const x = (i) => L + (i / Math.max(1, line.days - 1)) * (W - L - R)
+  const y = (v) => T + ((max - v) / (max - min || 1)) * (H - T - B)
+  const path = (vals) => vals.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ',' + y(v).toFixed(1)).join(' ')
+  const tick = (i, anchor) => '<text x="' + x(i).toFixed(1) + '" y="' + (H - 4) + '" font-size="10" fill="var(--faint)" text-anchor="' + anchor + '">' + (i + 1) + '</text>'
+  let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Left to spend through the month">'
+  s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(0).toFixed(1) + '" y2="' + y(0).toFixed(1) + '" stroke="var(--line)" />'
+  s += '<path d="' + path(line.pace) + '" fill="none" stroke="var(--faint)" stroke-width="1.5" stroke-dasharray="5 4" />'
+  if (line.actual.length) {
+    s += '<path d="' + path(line.actual) + '" fill="none" stroke="var(--bar)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />'
+    const i = line.actual.length - 1
+    s += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(line.actual[i]).toFixed(1) + '" r="3.5" fill="var(--bar)" />'
+  }
+  s += tick(0, 'start') + tick(Math.floor(line.days / 2) - 1, 'middle') + tick(line.days - 1, 'end') + '</svg>'
+  const box = h('div', { class: 'chart' }); box.innerHTML = s
+  return box
+}
+
+function attention(d) {
+  const out = []
+  const t = d.totals
+  if (d.unassignedCount > 0)
+    out.push(['inbox', 'warn', d.unassignedCount + (d.unassignedCount === 1 ? ' transaction needs' : ' transactions need') + ' a line item', 'Assign them in the app on your PC.'])
+  if (t.leftToBudgetCents > 0) out.push(['alert', 'warn', money(t.leftToBudgetCents) + ' still needs a job', 'Income minus planned spending should be $0.00.'])
+  if (t.leftToBudgetCents < 0) out.push(['alert', 'danger', 'The plan spends ' + money(-t.leftToBudgetCents) + ' more than the income', 'Income minus planned spending should be $0.00.'])
+  const soon = parseDay(d.today); soon.setDate(soon.getDate() + 7)
+  for (const b of d.bills.filter((b) => b.kind === 'bill' && b.status !== 'paid' && parseDay(b.dueDate) <= soon).slice(0, 3)) {
+    const when = parseDay(b.dueDate).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+    out.push(b.status === 'overdue'
+      ? ['bills', 'danger', b.name + ' is overdue', money(b.amountCents) + ' · was due ' + when]
+      : ['bills', 'green', b.name + ' is due ' + (b.dueDate === d.today ? 'today' : when), money(b.amountCents) + (b.autopay ? ' · autopay' : '')])
+  }
+  for (const f of d.funds.filter((f) => f.subBudget)) {
+    if (f.credit && f.targetCents > 0 && f.balanceCents >= f.targetCents * 0.8) {
+      const left = f.targetCents - f.balanceCents
+      out.push(['gift', left < 0 ? 'danger' : 'warn', f.name + ' is ' + Math.round((f.balanceCents / f.targetCents) * 100) + '% spent', left < 0 ? money(-left) + ' over the limit' : money(left) + ' left of the limit'])
+    } else if (!f.credit && f.balanceCents < 0) out.push(['gift', 'danger', f.name + ' is overspent', money(-f.balanceCents) + ' more spent than saved'])
+  }
+  return out
+}
+
+function dashboardView(d) {
+  if (!d.totals) return [h('div', { class: 'card empty' }, 'No budget has been made yet.')]
+  const t = d.totals
+  const line = leftLine(d)
+  const left = t.remainingCents
+  const daysLeft = line.dayNow > 0 && line.dayNow < line.days ? line.days - line.dayNow + 1 : line.dayNow === 0 ? line.days : 0
+  const paceNow = line.dayNow > 0 ? line.pace[line.dayNow - 1] : t.expensePlannedCents
+  let msg
+  if (t.expensePlannedCents === 0) msg = 'Plan this month’s spending to see how it’s going.'
+  else if (left < 0) msg = 'Spending is ' + money(-left) + ' over the plan.'
+  else if (daysLeft === 0) msg = 'The month ended with ' + money(left) + ' unspent.'
+  else msg = (left >= paceNow ? 'You’re on track. ' : 'Spending is ahead of the plan. ') + 'About ' + money(Math.floor(left / daysLeft)) + ' a day for the next ' + daysLeft + (daysLeft === 1 ? ' day.' : ' days.')
+
+  const out = [h('div', { class: 'card hero' },
+    h('span', { class: 'k' }, 'Left to spend · ' + monthName(d.month)),
+    h('span', { class: 'big' + (left < 0 ? ' neg' : '') }, money(left)),
+    h('span', { class: 'muted', style: 'font-size:14px' }, msg),
+    chartSvg(line),
+    h('div', { class: 'legend' }, h('span', {}, h('i'), 'Left to spend'), h('span', {}, h('i', { class: 'dash' }), 'Even pace')),
+    h('div', { class: 'minis' },
+      h('div', {}, h('b', { class: 'num' }, money(t.incomePlannedCents)), 'income planned'),
+      h('div', {}, h('b', { class: 'num' }, money(t.spentCents)), 'spent so far'),
+      h('div', {}, h('b', { class: 'num ' + (t.leftToBudgetCents === 0 ? 'pos' : 'neg') }, money(t.leftToBudgetCents)), 'left to budget')))]
+
+  if (d.accounts.length) {
+    const label = { checking: 'Checking', savings: 'Savings', cash: 'Cash', credit: 'Credit card · owed', loan: 'Loan · owed' }
+    const order = ['checking', 'savings', 'cash', 'credit', 'loan']
+    const list = d.accounts.slice().sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type))
+    out.push(h('div', { class: 'accts' }, list.map((a) => {
+      const debt = a.type === 'credit' || a.type === 'loan'
+      return h('div', { class: 'acct f-' + a.type },
+        h('span', { class: 'ty' }, label[a.type] || a.type),
+        h('span', { class: 'bal num' }, money(debt ? Math.abs(a.balanceCents) : a.balanceCents)),
+        h('span', { class: 'nm' }, a.name))
+    })))
+  }
+  const net = d.netWorth.assetsCents - d.netWorth.owedCents
+  out.push(h('div', { class: 'grid' },
+    h('div', { class: 'card stat' }, h('div', { class: 'label' }, 'Net worth'), h('div', { class: 'v num' + (net < 0 ? ' neg' : '') }, money(net))),
+    h('div', { class: 'card stat' }, h('div', { class: 'label' }, 'Debt-free'), h('div', { class: 'v' }, d.debts ? (d.debts.debtFreeMonth ? monthName(d.debts.debtFreeMonth) : 'Not yet planned') : 'No debts'))))
+
+  const items = attention(d)
+  out.push(h('div', { class: 'card' },
+    h('div', { class: 'card-h' }, h('b', {}, 'Needs your attention'), items.length ? h('span', { class: 'pill' }, items.length) : null),
+    items.length
+      ? items.map(([ic, tone, title, sub]) => h('div', { class: 'todo' }, icon(ic, tone), h('div', {}, h('div', { class: 't' }, title), h('div', { class: 's' }, sub))))
+      : h('div', { class: 'todo' }, icon('check', 'green'), h('div', { class: 's' }, 'Nothing needs you right now.'))))
+
+  const cats = d.categories.filter((c) => c.kind === 'expense' && (c.plannedCents > 0 || c.actualCents > 0))
+  if (cats.length)
+    out.push(h('div', { class: 'card' },
+      h('div', { class: 'card-h', style: 'margin-bottom:12px' }, h('b', {}, 'Spending by category')),
+      h('div', { class: 'cats' }, cats.map((c) => {
+        const over = c.remainingCents < 0
+        return h('div', { class: 'cat' },
+          h('div', { class: 'l' }, h('span', {}, c.name), h('span', { class: 'num' + (over ? ' neg' : '') }, over ? money(-c.remainingCents) + ' over' : money(c.remainingCents) + ' left')),
+          bar(c.actualCents, c.plannedCents, over, true))
+      }))))
+  return out
+}
+
+function budgetView(d) {
+  if (!d.totals) return [h('div', { class: 'card empty' }, 'No budget has been made yet.')]
+  const t = d.totals
+  const out = [h('div', { class: 'grid' },
+    h('div', { class: 'card stat' }, h('div', { class: 'label' }, 'Income received'), h('div', { class: 'v num' }, money(t.incomeReceivedCents)), h('div', { class: 'muted', style: 'font-size:13px' }, 'of ' + money(t.incomePlannedCents))),
+    h('div', { class: 'card stat' }, h('div', { class: 'label' }, 'Spent'), h('div', { class: 'v num' }, money(t.spentCents)), h('div', { class: 'muted', style: 'font-size:13px' }, 'of ' + money(t.expensePlannedCents))))]
+  out.push(h('h2', {}, monthName(d.month)))
+  const list = h('div', { class: 'card list' }, h('div', { class: 'head' }, h('span', {}, 'Category'), h('span', {}, 'Left')))
+  for (const c of d.categories.filter((c) => c.kind === 'expense')) {
+    const over = c.remainingCents < 0
+    list.append(h('details', {},
+      h('summary', { class: 'row' },
+        h('div', { class: 'main' },
+          h('div', { class: 't' }, h('span', { class: 'chev' }, '›'), c.name),
+          h('div', { class: 's' }, money(c.actualCents) + ' spent of ' + money(c.plannedCents)),
+          bar(c.actualCents, c.plannedCents, over, true)),
+        h('div', { class: 'amt' + (over ? ' neg' : '') }, over ? money(-c.remainingCents) : money(c.remainingCents), h('div', { class: 's' }, over ? 'over' : 'left'))),
+      h('div', { class: 'items' }, c.items.map((i) => h('div', { class: 'row' },
+        h('div', { class: 'main' }, h('div', {}, i.name), h('div', { class: 's' }, money(i.actualCents) + ' of ' + money(i.plannedCents))),
+        h('span', { class: 'amt' + (i.remainingCents < 0 ? ' neg' : '') }, money(i.remainingCents)))))))
+  }
+  out.push(list)
+  return out
+}
+
+function fundCard(f) {
+  const over = f.credit ? f.targetCents > 0 && f.balanceCents > f.targetCents : f.balanceCents < 0
+  const sub = f.credit
+    ? f.targetCents > 0 ? 'spent of ' + money(f.targetCents) + ' limit' : 'spent on card'
+    : f.targetCents > 0 ? f.percent + '% of ' + money(f.targetCents) : 'saved'
+  const top = h('div', { class: 'row', style: 'padding:0' },
+    h('div', { class: 'main' },
+      h('div', { class: 't' }, f.subBudget ? h('span', { class: 'chev' }, '›') : null, f.name, f.subBudget ? h('span', { class: 'tag' }, f.credit ? 'card' : 'cash') : null),
+      h('div', { class: 's' }, sub)),
+    h('div', { class: 'amt' + (over ? ' neg' : '') }, money(f.balanceCents)))
+  const progress = f.targetCents > 0 ? bar(Math.max(0, f.balanceCents), f.targetCents, over, f.credit) : null
+  if (!f.subBudget) return h('div', { class: 'card' }, top, progress)
+  const items = f.items.length
+    ? h('div', { class: 'items', style: 'margin:12px -18px -16px' }, f.items.map((i) => h('div', { class: 'row' },
+        h('div', { class: 'main' }, h('div', {}, i.done ? h('span', { class: 'check-done' }, '✓') : null, i.name),
+          h('div', { class: 's' }, money(i.spentCents) + ' spent' + (i.plannedCents > 0 ? ' of ' + money(i.plannedCents) : ''))),
+        i.plannedCents > 0
+          ? h('span', { class: 'amt' + (i.spentCents > i.plannedCents ? ' neg' : '') }, money(i.plannedCents - i.spentCents), h('div', { class: 's' }, i.spentCents > i.plannedCents ? 'over' : 'left'))
+          : null)))
+    : h('p', { class: 'muted', style: 'margin:12px 0 0;font-size:13px' }, 'No items on this list.')
+  return h('details', { class: 'card' }, h('summary', {}, top, progress), items)
+}
+
+function fundsView(d) {
+  if (!d.funds.length) return [h('div', { class: 'card empty' }, 'No sub-budgets or goals yet.')]
+  const subs = d.funds.filter((f) => f.subBudget), goals = d.funds.filter((f) => !f.subBudget)
+  const out = []
+  if (subs.length) out.push(h('h2', {}, 'Sub-budgets'), subs.map(fundCard))
+  if (goals.length) out.push(h('h2', {}, 'Savings goals'), goals.map(fundCard))
+  return out.flat()
+}
+
+function billsView(d) {
+  if (!d.bills.length) return [h('div', { class: 'card empty' }, 'No bills or income in the next 30 days.')]
+  const labels = { paid: 'Paid', overdue: 'Overdue', 'due-soon': 'Due soon', upcoming: 'Upcoming' }
+  return [h('h2', {}, 'Next 30 days'), h('div', { class: 'card list' }, d.bills.map((b) => {
+    const date = parseDay(b.dueDate)
+    return h('div', { class: 'row' },
+      h('div', { class: 'date' }, h('small', {}, date.toLocaleDateString('en-US', { month: 'short' })), h('b', {}, date.getDate())),
+      h('div', { class: 'main' }, h('div', { class: 't' }, b.name), h('div', { class: 's' }, date.toLocaleDateString('en-US', { weekday: 'long' }) + (b.autopay ? ' · autopay' : ''))),
+      h('div', { class: 'amt' + (b.kind === 'income' ? ' pos' : '') }, (b.kind === 'income' ? '+' : '') + money(b.amountCents),
+        h('div', {}, h('span', { class: 'badge b-' + b.status }, b.kind === 'income' && b.status === 'paid' ? 'Received' : labels[b.status]))))
+  }))]
+}
+
+const TABS = [['Dashboard', 'dashboard', dashboardView], ['Budget', 'budget', budgetView], ['Funds', 'funds', fundsView], ['Bills', 'bills', billsView]]
+let data = null
+
+function show(index) {
+  const app = $('app')
+  app.replaceChildren(...TABS[index][2](data))
+  $('tabs').querySelectorAll('button').forEach((b, i) => b.setAttribute('aria-selected', i === index))
+  window.scrollTo(0, 0)
+}
+
+function render(d) {
+  data = d
+  $('household').textContent = d.household
+  $('updated').textContent = 'Updated ' + new Date(d.generatedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+  const tabs = $('tabs')
+  tabs.replaceChildren(...TABS.map(([name, ic], i) => {
+    const pic = h('span', { class: 'tb' }); pic.innerHTML = ICONS[ic]
+    const b = h('button', { type: 'button', role: 'tab' }, pic, name); b.onclick = () => show(i); return b
+  }))
+  tabs.hidden = false
+  $('lock').hidden = false
+  show(0)
+}
+
+$('lock').onclick = () => { store.set(null); location.reload() }
+$('unlock').onsubmit = async (e) => {
+  e.preventDefault()
+  const pass = $('pass').value
+  $('go').disabled = true; $('go').textContent = 'Unlocking…'; $('err').hidden = true
+  try {
+    const d = await decrypt(pass)
+    if ($('remember').checked) store.set(pass)
+    render(d)
+  } catch {
+    $('err').hidden = false; $('go').disabled = false; $('go').textContent = 'Unlock'
+  }
+}
+const saved = store.get()
+if (saved) decrypt(saved).then(render).catch(() => store.set(null))
+
+</script>
+</body>
+</html>
